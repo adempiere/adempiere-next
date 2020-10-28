@@ -1,0 +1,4 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/adempiere/adempiere-vue.git
+	branch = master
