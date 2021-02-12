@@ -1,9 +1,13 @@
 import _root_.sbt._
 
-val zioGrpcVersion = "0.4.0"
+val zioGrpcVersion = "0.4.2"
 
-addSbtPlugin("com.eed3si9n"                             % "sbt-assembly"     % "0.14.10")
-addSbtPlugin("org.jetbrains"                            % "sbt-idea-plugin"  % "3.5.0")
-addSbtPlugin("com.earldouglas"                          % "xsbt-web-plugin"  % "4.1.0")
-addSbtPlugin("com.thesamet"                             % "sbt-protoc"       % "0.99.34")
+addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.5.2")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.9.25")
+addSbtPlugin("ch.epfl.scala" % "sbt-bloop" % "1.4.6")
+addSbtPlugin("org.scalameta" % "sbt-mdoc" % "2.2.16")
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.2")
+
+addSbtPlugin("com.thesamet" %% "sbt-protoc" % "1.0.0")
 libraryDependencies += "com.thesamet.scalapb.zio-grpc" %% "zio-grpc-codegen" % zioGrpcVersion
+libraryDependencies += "com.thesamet.scalapb" %% "compilerplugin" % "0.10.10"
