@@ -1,0 +1,9 @@
+/.bloop/
+/.bsp/
+/.idea/
+
+/target/
+/org.eevolution.dictionary/target/
+/org.eevolution.kernel/target/
+/project/target/
+/project/project/target/
