@@ -1,61 +1,193 @@
-import sbt.Keys.{ unmanagedJars, unmanagedSourceDirectories }
+/**
+  * Copyright (C) 2003-2021, e-Evolution Consultants S.A. , http://www.e-evolution.com
+  * This program is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation, either version 3 of the License, or
+  * (at your option) any later version.
+  * This program is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  * You should have received a copy of the GNU General Public License
+  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  * Email: victor.perez@e-evolution.com, http://www.e-evolution.com , http://github.com/e-Evolution
+  * Created by victor.perez@e-evolution.com , www.e-evolution.com.
+  * Modified by emeris.hernandez@e-evolution.com , www.e-evolution.com on 19/10/17.
+  */
 
 name := "ADempiere-Aesthetic"
 
-version := "0.0.1"
+val scala2Version = "2.13.4"
+//val scala3Version = "3.0.0-M3"
+val zioVersion = "1.0.4-2"
+val quillVersion = "3.6.0"
+val pgJdbcVersion = "42.2.18"
+val grpcVersion = "1.35.0"
+val sourceAdempiere = "/Users/e-Evolution/Develop/ADempiere/serviceManagement"
 
-scalaVersion := "2.13.1"
+lazy val root = project
+  .in(file("."))
+  .settings(
+    name := "ADempiere-Aesthetic",
+    version := "0.1.0",
+    scalaVersion := scala2Version,
+    crossScalaVersions := Nil
+  )
+  .aggregate(dictionary)
 
-crossPaths := false
+lazy val kernel = (project in file("org.eevolution.kernel"))
+  .settings(
+    fork in Test := true,
+    javaOptions in Test ++= Seq(
+      "-DPropertyFile=/Users/e-Evolution/AdempierePG.properties"
+    )
+  )
+  .settings(
+    name := "kernel",
+    scalaVersion := scala2Version,
+    //crossScalaVersions := Seq(scala3Version, scala2Version),
+    /*unmanagedSourceDirectories in Compile ++= {
+      val sourceDir = (sourceDirectory in Compile).value
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((3, _))  => Seq(sourceDir / "scala-3")
+        case Some((2,13))  => Seq(sourceDir / "scala-3")
+        case Some((2,_))  => Seq(sourceDir / "scala-2.13", sourceDir / "scala-2.13+")
+        case _             => Seq()
+      }
+    },*/
+    scalacOptions ++= {
+      if (isDotty.value)
+        Seq(
+          "-Ytasty-reader",
+          "-encoding",
+          "UTF-8",
+          "-feature",
+          "-unchecked",
+          "-language:implicitConversions"
+          // "-Xfatal-warnings" will be added after the migration
+        )
+      else
+        Seq(
+          "-encoding",
+          "UTF-8",
+          "-feature",
+          "-deprecation",
+          "-language:implicitConversions",
+          "-Xfatal-warnings"
+          //"-Wunused:imports,privates,locals",
+          //"-Wvalue-discard"
+        )
+    },
+    libraryDependencies ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((3, _)) =>
+          Seq(("dev.zio" %% "zio" % zioVersion).withDottyCompat(scala2Version))
+        case Some((2, 13)) =>
+          Seq(
+            "dev.zio" %% "zio" % zioVersion,
+            "dev.zio" %% "zio-test" % zioVersion % Test,
+            "dev.zio" %% "zio-test-sbt" % zioVersion % Test,
+            "dev.zio" %% "zio-test-magnolia" % zioVersion % Test, // optional
+            "dev.zio" %% "zio-test-junit" % zioVersion % Test,
+            "org.scala-lang" % "scala-reflect" % scala2Version,
+            "io.getquill" %% "quill-jdbc" % quillVersion,
+            "org.postgresql" % "postgresql" % pgJdbcVersion
+          )
+        case _ =>
+          Seq(
+            "dev.zio" %% "zio" % zioVersion,
+            "dev.zio" %% "zio-test" % zioVersion % Test,
+            "dev.zio" %% "zio-test-sbt" % zioVersion % Test,
+            "dev.zio" %% "zio-test-magnolia" % zioVersion % Test, // optional
+            "dev.zio" %% "zio-test-junit" % zioVersion % Test,
+            "org.scala-lang" % "scala-reflect" % scala2Version,
+            "io.getquill" %% "quill-jdbc" % quillVersion,
+            "org.postgresql" %% "postgresql" % pgJdbcVersion
+          )
+      }
+    },
+    unmanagedBase := baseDirectory.value.getParentFile / "lib",
+    testFrameworks := Seq(new TestFramework("zio.test.sbt.ZTestFramework"))
+  )
 
-libraryDependencies ++= Seq(
-  "javax.servlet"         % "javax.servlet-api"    % "3.0.1" % "provided",
-  "com.typesafe"          % "config"               % "1.2.0",
-  "com.lihaoyi"          %% "os-lib"               % "0.6.3",
-  "io.circe"             %% "circe-core"           % "0.12.3",
-  "io.circe"             %% "circe-generic"        % "0.12.3",
-  "io.circe"             %% "circe-parser"         % "0.12.3",
-  "dev.zio"              %% "zio"                  % "1.0.0-RC18",
-  "io.getquill"          %% "quill-jdbc"           % "3.5.0",
-  "org.postgresql"        % "postgresql"           % "42.2.8",
-  "org.scala-lang"        % "scala-reflect"        % "2.13.1",
-  "org.scalactic"        %% "scalactic"            % "3.1.0",
-  "org.scalatest"        %% "scalatest"            % "3.1.0" % "test",
-  "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % scalapb.compiler.Version.scalapbVersion,
-  "io.grpc"               % "grpc-netty"           % grpcVersion
-)
-
-scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-encoding", "utf8")
-javacOptions ++= Seq("-encoding", "UTF-8")
-
-val sourceAdempiere = "../"
-
-unmanagedJars in Compile ++= (file(sourceAdempiere + "/zkwebui/WEB-INF/lib") * "*.jar").classpath
-unmanagedJars in Compile ++= (file(sourceAdempiere + "/tools/lib") * "*.jar").classpath
-unmanagedJars in Compile ++= (file(sourceAdempiere + "/lib") * "*.jar").classpath
-unmanagedJars in Compile ++= (file(sourceAdempiere + "/packages") * "*.jar").classpath
-unmanagedJars in Compile ++= (file(sourceAdempiere + "/zkpackages") * "*.jar").classpath
-
-scalaSource in Compile := baseDirectory.value / "src" / "main" / "scala"
-scalaSource in Test := baseDirectory.value / "src" / "test" / "scala"
-
-val grpcVersion = "1.31.1"
-
-PB.targets in Compile := Seq(
-  scalapb.gen(grpc = true)          -> (sourceManaged in Compile).value,
-  scalapb.zio_grpc.ZioCodeGenerator -> (sourceManaged in Compile).value
-)
-
-assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-  case x                             => MergeStrategy.last
-}
-
-assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = true, includeDependency = false)
-
-assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-  case x                             => MergeStrategy.last
-}
-
-assemblyJarName in assembly := "ADempiere-Aesthetic.jar"
+lazy val dictionary = (project in file("org.eevolution.dictionary"))
+  .settings(
+    fork in Test := true,
+    javaOptions in Test ++= Seq(
+      "-DPropertyFile=/Users/e-Evolution/AdempierePG.properties"
+    )
+  )
+  .settings(
+    name := "dictionary",
+    scalaVersion := scala2Version,
+    //crossScalaVersions := Seq(scala3Version, scala2Version),
+    /*unmanagedSourceDirectories in Compile ++= {
+      val sourceDir = (sourceDirectory in Compile).value
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((3, _))  => Seq(sourceDir / "scala-3")
+        case Some((2,13))  => Seq(sourceDir / "scala-3")
+        case Some((2,_))  => Seq(sourceDir / "scala-2.13", sourceDir / "scala-2.13+")
+        case _             => Seq()
+      }
+    },*/
+    scalacOptions ++= {
+      if (isDotty.value)
+        Seq(
+          "-Ytasty-reader",
+          "-encoding",
+          "UTF-8",
+          "-feature",
+          "-unchecked",
+          "-language:implicitConversions"
+          // "-Xfatal-warnings" will be added after the migration
+        )
+      else
+        Seq(
+          "-encoding",
+          "UTF-8",
+          "-feature",
+          "-deprecation",
+          "-language:implicitConversions",
+          "-Xfatal-warnings"
+          //"-Wunused:imports,privates,locals",
+          //"-Wvalue-discard"
+        )
+    },
+    libraryDependencies ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((3, _)) =>
+          Seq(("dev.zio" %% "zio" % zioVersion).withDottyCompat(scala2Version))
+        case Some((2, 13)) =>
+          Seq(
+            "dev.zio" %% "zio" % zioVersion,
+            "dev.zio" %% "zio-test" % zioVersion % Test,
+            "dev.zio" %% "zio-test-sbt" % zioVersion % Test,
+            "dev.zio" %% "zio-test-magnolia" % zioVersion % Test, // optional
+            "dev.zio" %% "zio-test-junit" % zioVersion % Test,
+            "org.scala-lang" % "scala-reflect" % scala2Version,
+            "io.getquill" %% "quill-jdbc" % quillVersion,
+            "org.postgresql" % "postgresql" % pgJdbcVersion,
+            "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % scalapb.compiler.Version.scalapbVersion,
+            "io.grpc" % "grpc-netty" % grpcVersion
+          )
+        case _ =>
+          Seq(
+            "dev.zio" %% "zio" % zioVersion,
+            "dev.zio" %% "zio-test" % zioVersion % Test,
+            "dev.zio" %% "zio-test-sbt" % zioVersion % Test,
+            "dev.zio" %% "zio-test-magnolia" % zioVersion % Test, // optional
+            "dev.zio" %% "zio-test-junit" % zioVersion % Test,
+            "org.scala-lang" % "scala-reflect" % scala2Version,
+            "io.getquill" %% "quill-jdbc" % quillVersion,
+            "org.postgresql" %% "postgresql" % pgJdbcVersion
+          )
+      }
+    },
+    unmanagedBase := baseDirectory.value.getParentFile / "lib",
+    testFrameworks := Seq(new TestFramework("zio.test.sbt.ZTestFramework")),
+    PB.targets in Compile := Seq(
+      scalapb.gen(grpc = true) -> (sourceManaged in Compile).value,
+      scalapb.zio_grpc.ZioCodeGenerator -> (sourceManaged in Compile).value
+    )
+  )
+  .dependsOn(kernel)
