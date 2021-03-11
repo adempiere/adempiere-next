@@ -1,0 +1,132 @@
+/**
+ * Copyright (C) 2003-2021, e-Evolution Consultants S.A. , http://www.e-evolution.com
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Email: victor.perez@e-evolution.com, http://www.e-evolution.com , http://github.com/e-Evolution
+ * Created by victor.perez@e-evolution.com , www.e-evolution.com
+ */
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.eevolution.context.workflow.infrastructure.service.grpc";
+
+package workflow;
+
+
+import "application_dictionary_data_type.proto";
+import "google/protobuf/wrappers.proto";
+
+/*
+* WfNodePara Proto Message for Workflow Node Parameter domain model  
+* Workflow Node Execution Parameter
+* 
+*/
+message WfNodePara
+{
+		// AD_WF_Node_ID -> Node : Workflow Node (activity), step or process
+		TableDirect                   				wf_node_id  = 1;
+		// CreatedBy -> Created By : User who created this records
+		Table                         				created_by  = 2;
+		// Created -> Created : Date this record was created
+		DateTime                      				created  = 3;
+		// Description -> Description : Optional short description of the record
+		String                        				description  = 4;
+		// AttributeName -> Attribute Name : Name of the Attribute
+		String                        				attribute_name  = 5;
+		// AD_WF_Node_Para_ID -> Workflow Node Parameter : Workflow Node Execution Parameter
+		ID                            				wf_node_para_id  = 6;
+		// AD_Org_ID -> Organization : Organizational entity within client
+		TableDirect                   				org_id  = 7;
+		// AD_Process_Para_ID -> Process Parameter : 
+		TableDirect                   				process_para_id  = 8;
+		// AD_Client_ID -> Client : Client/Tenant for this installation.
+		TableDirect                   				client_id  = 9;
+		// UpdatedBy -> Updated By : User who updated this records
+		Table                         				updated_by  = 10;
+		// IsActive -> Active : The record is active in the system
+		YesNo                         				is_active  = 11;
+		// Updated -> Updated : Date this record was updated
+		DateTime                      				updated  = 12;
+		// AttributeValue -> Attribute Value : Value of the Attribute
+		String                        				attribute_value  = 13;
+		// EntityType -> Entity Type : Dictionary Entity Type; Determines ownership and synchronization
+		String                        				entity_type  = 14;
+		// UUID -> Immutable Universally Unique Identifier : Immutable Universally Unique Identifier
+		String                        				uuid  = 15;
+}
+
+
+// Proto Message Request for AD_WF_Node_ID 
+message WfNodeParaByWfNodeIdRequest{
+	TableDirect                    wf_node_id = 1;
+}
+
+// Proto Message Request for Description 
+message WfNodeParaByDescriptionRequest{
+	String                         description = 1;
+}
+
+// Proto Message Request for AttributeName 
+message WfNodeParaByAttributeNameRequest{
+	String                         attribute_name = 1;
+}
+
+// Proto Message Request for AD_WF_Node_Para_ID 
+message WfNodeParaByWfNodeParaIdRequest{
+	ID                             wf_node_para_id = 1;
+}
+
+// Proto Message Request for All Request 
+message WfNodeParaAllRequest 
+{
+}
+
+// Proto Message Request for All By Client Id Request    
+message WfNodeParaAllByClientIdRequest{
+  TableDirect tenant_id = 1;
+} 
+    
+// Proto Message Save Request for WfNodePara
+message WfNodeParaSaveRequest{
+  WfNodePara wf_node_para = 1 ;
+}
+    
+// Proto Message Response for WfNodePara
+message WfNodeParaResponse
+{
+   WfNodePara wf_node_para = 1;
+}
+ 
+// Proto Message Response for WfNodePara Stream   
+message WfNodeParaStreamResponse{
+  repeated WfNodePara wf_node_para = 1;
+} 
+    
+// Proto Service for WfNodePara Domain Model
+service WfNodeParaService {
+
+    rpc GetWfNodeParaByWfNodeId(WfNodeParaByWfNodeIdRequest) returns (stream WfNodeParaStreamResponse) {}
+
+    rpc GetWfNodeParaByDescription(WfNodeParaByDescriptionRequest) returns (stream WfNodeParaStreamResponse) {}
+
+    rpc GetWfNodeParaByAttributeName(WfNodeParaByAttributeNameRequest) returns (stream WfNodeParaStreamResponse) {}
+
+    rpc GetWfNodeParaByWfNodeParaId(WfNodeParaByWfNodeParaIdRequest) returns (WfNodeParaResponse) {}
+
+    rpc GetWfNodeParaAll(WfNodeParaAllRequest) returns (stream WfNodeParaStreamResponse) {}
+    
+    rpc GetWfNodeParaAllByClientId(WfNodeParaAllByClientIdRequest) returns (stream WfNodeParaStreamResponse) {}
+    
+    rpc save(WfNodeParaSaveRequest) returns (WfNodeParaResponse) {}
+    
+}

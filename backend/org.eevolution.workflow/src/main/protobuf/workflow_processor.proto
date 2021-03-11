@@ -1,0 +1,137 @@
+/**
+ * Copyright (C) 2003-2021, e-Evolution Consultants S.A. , http://www.e-evolution.com
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Email: victor.perez@e-evolution.com, http://www.e-evolution.com , http://github.com/e-Evolution
+ * Created by victor.perez@e-evolution.com , www.e-evolution.com
+ */
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.eevolution.context.workflow.infrastructure.service.grpc";
+
+package workflow;
+
+
+import "application_dictionary_data_type.proto";
+import "google/protobuf/wrappers.proto";
+
+/*
+* WorkflowProcessor Proto Message for Workflow Processor domain model  
+* Workflow Processor Server
+* 
+*/
+message WorkflowProcessor
+{
+		// DateNextRun -> Date next run : Date the process will run next
+		DateTime                      				date_next_run  = 1;
+		// Description -> Description : Optional short description of the record
+		String                        				description  = 2;
+		// KeepLogDays -> Days to keep Log : Number of days to keep the log entries
+		Integer                       				keep_log_days  = 3;
+		// FrequencyType -> Frequency Type : Frequency of event
+		String                        				frequency_type  = 4;
+		// Name -> Name : Alphanumeric identifier of the entity
+		String                        				name  = 5;
+		// Processing -> Process Now : 
+		String                        				processing  = 6;
+		// UpdatedBy -> Updated By : User who updated this records
+		Table                         				updated_by  = 7;
+		// AD_Client_ID -> Client : Client/Tenant for this installation.
+		TableDirect                   				client_id  = 8;
+		// AD_Org_ID -> Organization : Organizational entity within client
+		TableDirect                   				org_id  = 9;
+		// AD_WorkflowProcessor_ID -> Workflow Processor : Workflow Processor Server
+		ID                            				workflow_processor_id  = 10;
+		// IsActive -> Active : The record is active in the system
+		YesNo                         				is_active  = 11;
+		// CreatedBy -> Created By : User who created this records
+		Table                         				created_by  = 12;
+		// Frequency -> Frequency : Frequency of events
+		Integer                       				frequency  = 13;
+		// Updated -> Updated : Date this record was updated
+		DateTime                      				updated  = 14;
+		// Created -> Created : Date this record was created
+		DateTime                      				created  = 15;
+		// Supervisor_ID -> Supervisor : Supervisor for this user/organization - used for escalation and approval
+		Table                         				supervisor_id  = 16;
+		// DateLastRun -> Date last run : Date the process was last run.
+		DateTime                      				date_last_run  = 17;
+		// InactivityAlertDays -> Inactivity Alert Days : Send Alert when there is no activity after days (0= no alert)
+		Integer                       				inactivity_alert_days  = 18;
+		// RemindDays -> Reminder Days : Days between sending Reminder Emails for a due or inactive Document
+		Integer                       				remind_days  = 19;
+		// AlertOverPriority -> Alert over Priority : Send alert email when over priority
+		Integer                       				alert_over_priority  = 20;
+		// UUID -> Immutable Universally Unique Identifier : Immutable Universally Unique Identifier
+		String                        				uuid  = 21;
+}
+
+
+// Proto Message Request for Description 
+message WorkflowProcessorByDescriptionRequest{
+	String                         description = 1;
+}
+
+// Proto Message Request for Name 
+message WorkflowProcessorByNameRequest{
+	String                         name = 1;
+}
+
+// Proto Message Request for AD_WorkflowProcessor_ID 
+message WorkflowProcessorByWorkflowProcessorIdRequest{
+	ID                             workflow_processor_id = 1;
+}
+
+// Proto Message Request for All Request 
+message WorkflowProcessorAllRequest 
+{
+}
+
+// Proto Message Request for All By Client Id Request    
+message WorkflowProcessorAllByClientIdRequest{
+  TableDirect tenant_id = 1;
+} 
+    
+// Proto Message Save Request for WorkflowProcessor
+message WorkflowProcessorSaveRequest{
+  WorkflowProcessor workflow_processor = 1 ;
+}
+    
+// Proto Message Response for WorkflowProcessor
+message WorkflowProcessorResponse
+{
+   WorkflowProcessor workflow_processor = 1;
+}
+ 
+// Proto Message Response for WorkflowProcessor Stream   
+message WorkflowProcessorStreamResponse{
+  repeated WorkflowProcessor workflow_processor = 1;
+} 
+    
+// Proto Service for WorkflowProcessor Domain Model
+service WorkflowProcessorService {
+
+    rpc GetWorkflowProcessorByDescription(WorkflowProcessorByDescriptionRequest) returns (stream WorkflowProcessorStreamResponse) {}
+
+    rpc GetWorkflowProcessorByName(WorkflowProcessorByNameRequest) returns (WorkflowProcessorResponse) {}
+
+    rpc GetWorkflowProcessorByWorkflowProcessorId(WorkflowProcessorByWorkflowProcessorIdRequest) returns (WorkflowProcessorResponse) {}
+
+    rpc GetWorkflowProcessorAll(WorkflowProcessorAllRequest) returns (stream WorkflowProcessorStreamResponse) {}
+    
+    rpc GetWorkflowProcessorAllByClientId(WorkflowProcessorAllByClientIdRequest) returns (stream WorkflowProcessorStreamResponse) {}
+    
+    rpc save(WorkflowProcessorSaveRequest) returns (WorkflowProcessorResponse) {}
+    
+}

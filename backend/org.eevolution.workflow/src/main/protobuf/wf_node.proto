@@ -1,0 +1,240 @@
+/**
+ * Copyright (C) 2003-2021, e-Evolution Consultants S.A. , http://www.e-evolution.com
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Email: victor.perez@e-evolution.com, http://www.e-evolution.com , http://github.com/e-Evolution
+ * Created by victor.perez@e-evolution.com , www.e-evolution.com
+ */
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.eevolution.context.workflow.infrastructure.service.grpc";
+
+package workflow;
+
+
+import "application_dictionary_data_type.proto";
+import "google/protobuf/wrappers.proto";
+
+/*
+* WfNode Proto Message for Node domain model  
+* Workflow Node (activity) step or process
+* 
+*/
+message WfNode
+{
+		// AD_WF_Node_ID -> Node : Workflow Node (activity), step or process
+		ID                            				wf_node_id  = 1;
+		// Name -> Name : Alphanumeric identifier of the entity
+		String                        				name  = 2;
+		// Description -> Description : Optional short description of the record
+		String                        				description  = 3;
+		// AD_Workflow_ID -> Workflow : Workflow or combination of tasks
+		TableDirect                   				workflow_id  = 4;
+		// AD_Client_ID -> Client : Client/Tenant for this installation.
+		TableDirect                   				client_id  = 5;
+		// AD_Org_ID -> Organization : Organizational entity within client
+		TableDirect                   				org_id  = 6;
+		// IsActive -> Active : The record is active in the system
+		YesNo                         				is_active  = 7;
+		// Created -> Created : Date this record was created
+		DateTime                      				created  = 8;
+		// CreatedBy -> Created By : User who created this records
+		Table                         				created_by  = 9;
+		// Updated -> Updated : Date this record was updated
+		DateTime                      				updated  = 10;
+		// UpdatedBy -> Updated By : User who updated this records
+		Table                         				updated_by  = 11;
+		// Help -> Comment/Help : Comment or Hint
+		String                        				help  = 12;
+		// Action -> Action : Indicates the Action to be performed
+		String                        				action  = 13;
+		// AD_Window_ID -> Window : Data entry or display window
+		TableDirect                   				window_id  = 14;
+		// Workflow_ID -> Workflow : Workflow or tasks
+		Table                         				ref_workflow_id  = 15;
+		// AD_Task_ID -> OS Task : Operation System Task
+		TableDirect                   				task_id  = 16;
+		// AD_Process_ID -> Process : Process or Report
+		TableDirect                   				process_id  = 17;
+		// AD_Form_ID -> Special Form : Special Form
+		TableDirect                   				form_id  = 18;
+		// IsCentrallyMaintained -> Centrally maintained : Information maintained in System Element table
+		YesNo                         				is_centrally_maintained  = 19;
+		// YPosition -> Y Position : Absolute Y (vertical) position in 1/72 of an inch
+		Integer                       				y_position  = 20;
+		// EntityType -> Entity Type : Dictionary Entity Type; Determines ownership and synchronization
+		String                        				entity_type  = 21;
+		// XPosition -> X Position : Absolute X (horizontal) position in 1/72 of an inch
+		Integer                       				x_position  = 22;
+		// Limit -> Duration Limit : Maximum Duration in Duration Unit
+		Integer                       				limit  = 23;
+		// StartMode -> Start Mode : Workflow Activity Start Mode 
+		String                        				start_mode  = 24;
+		// AD_WF_Responsible_ID -> Workflow Responsible : Responsible for Workflow Execution
+		TableDirect                   				wf_responsible_id  = 25;
+		// Duration -> Duration : Normal Duration in Duration Unit
+		Integer                       				duration  = 26;
+		// SubflowExecution -> Subflow Execution : Mode how the sub-workflow is executed
+		String                        				subflow_execution  = 27;
+		// Cost -> Cost : Cost information
+		CostPrice                     				cost  = 28;
+		// WaitingTime -> Waiting Time : Workflow Simulation Waiting time
+		Integer                       				waiting_time  = 29;
+		// WorkingTime -> Working Time : Workflow Simulation Execution Time
+		Integer                       				working_time  = 30;
+		// AD_WF_Block_ID -> Workflow Block : Workflow Transaction Execution Block
+		TableDirect                   				wf_block_id  = 31;
+		// Priority -> Priority : Indicates if this request is of a high, medium or low priority.
+		Integer                       				priority  = 32;
+		// FinishMode -> Finish Mode : Workflow Activity Finish Mode
+		String                        				finish_mode  = 33;
+		// JoinElement -> Join Element : Semantics for multiple incoming Transitions
+		String                        				join_element  = 34;
+		// SplitElement -> Split Element : Semantics for multiple outgoing Transitions
+		String                        				split_element  = 35;
+		// AD_Image_ID -> Image : Image or Icon
+		TableDirect                   				image_id  = 36;
+		// AD_Column_ID -> Column : Column in the table
+		TableDirect                   				column_id  = 37;
+		// WaitTime -> Wait Time : Time in minutes to wait (sleep)
+		Integer                       				wait_time  = 38;
+		// AttributeValue -> Attribute Value : Value of the Attribute
+		String                        				attribute_value  = 39;
+		// AttributeName -> Attribute Name : Name of the Attribute
+		String                        				attribute_name  = 40;
+		// DocAction -> Document Action : The targeted status of the document
+		String                        				doc_action  = 41;
+		// Value -> Search Key : Search key for the record in the format required - must be unique
+		String                        				value  = 42;
+		// DynPriorityUnit -> Dynamic Priority Unit : Change of priority when Activity is suspended waiting for user
+		String                        				dyn_priority_unit  = 43;
+		// DynPriorityChange -> Dynamic Priority Change : Change of priority when Activity is suspended waiting for user
+		Number                        				dyn_priority_change  = 44;
+		// EMailRecipient -> EMail Recipient : Recipient of the EMail
+		String                        				e_mail_recipient  = 45;
+		// EMail -> EMail Address : Electronic Mail Address
+		String                        				e_mail  = 46;
+		// R_MailText_ID -> Mail Template : Text templates for mailings
+		TableDirect                   				mail_text_id  = 47;
+		// ValidTo -> Valid to : Valid to including this date (last day)
+		DateTime                      				valid_to  = 48;
+		// IsMilestone -> Is Milestone : 
+		YesNo                         				is_milestone  = 49;
+		// IsSubcontracting -> Is Subcontracting : 
+		YesNo                         				is_subcontracting  = 50;
+		// UnitsCycles -> Units by Cycles : The Units by Cycles are defined for process type  Flow Repetitive Dedicated and  indicated the product to be manufactured on a production line for duration unit.
+		Number                        				units_cycles  = 51;
+		// MovingTime -> Moving Time : 
+		Integer                       				moving_time  = 52;
+		// OverlapUnits -> Overlap Units : Overlap Units are number of units that must be completed before they are moved the next activity
+		Integer                       				overlap_units  = 53;
+		// C_BPartner_ID -> Business Partner  : Identifies a Business Partner
+		Search                        				b_partner_id  = 54;
+		// QueuingTime -> Queuing Time : Queue time is the time a job waits at a work center before begin handled.
+		Integer                       				queuing_time  = 55;
+		// S_Resource_ID -> Resource : Resource
+		TableDirect                   				resource_id  = 56;
+		// SetupTime -> Setup Time : Setup time before starting Production
+		Integer                       				setup_time  = 57;
+		// ValidFrom -> Valid from : Valid from including this date (first day)
+		DateTime                      				valid_from  = 58;
+		// Yield -> Yield % : The Yield is the percentage of a lot that is expected to be of acceptable wuality may fall below 100 percent
+		Integer                       				yield  = 59;
+		// AD_View_ID -> View : View allows you to create dynamic views of information from the dictionary application
+		TableDirect                   				view_id  = 60;
+		// AD_Browse_ID -> Smart Browse : 
+		TableDirect                   				browse_id  = 61;
+		// UUID -> Immutable Universally Unique Identifier : Immutable Universally Unique Identifier
+		String                        				uuid  = 62;
+}
+
+
+// Proto Message Request for AD_WF_Node_ID 
+message WfNodeByWfNodeIdRequest{
+	ID                             wf_node_id = 1;
+}
+
+// Proto Message Request for Name 
+message WfNodeByNameRequest{
+	String                         name = 1;
+}
+
+// Proto Message Request for Description 
+message WfNodeByDescriptionRequest{
+	String                         description = 1;
+}
+
+// Proto Message Request for AD_Workflow_ID 
+message WfNodeByWorkflowIdRequest{
+	TableDirect                    workflow_id = 1;
+}
+
+// Proto Message Request for AttributeName 
+message WfNodeByAttributeNameRequest{
+	String                         attribute_name = 1;
+}
+
+// Proto Message Request for Value 
+message WfNodeByValueRequest{
+	String                         value = 1;
+}
+
+// Proto Message Request for All Request 
+message WfNodeAllRequest 
+{
+}
+
+// Proto Message Request for All By Client Id Request    
+message WfNodeAllByClientIdRequest{
+  TableDirect tenant_id = 1;
+} 
+    
+// Proto Message Save Request for WfNode
+message WfNodeSaveRequest{
+  WfNode wf_node = 1 ;
+}
+    
+// Proto Message Response for WfNode
+message WfNodeResponse
+{
+   WfNode wf_node = 1;
+}
+ 
+// Proto Message Response for WfNode Stream   
+message WfNodeStreamResponse{
+  repeated WfNode wf_node = 1;
+} 
+    
+// Proto Service for WfNode Domain Model
+service WfNodeService {
+
+    rpc GetWfNodeByWfNodeId(WfNodeByWfNodeIdRequest) returns (WfNodeResponse) {}
+
+    rpc GetWfNodeByName(WfNodeByNameRequest) returns (WfNodeResponse) {}
+
+    rpc GetWfNodeByDescription(WfNodeByDescriptionRequest) returns (stream WfNodeStreamResponse) {}
+
+    rpc GetWfNodeByWorkflowId(WfNodeByWorkflowIdRequest) returns (stream WfNodeStreamResponse) {}
+
+    rpc GetWfNodeByAttributeName(WfNodeByAttributeNameRequest) returns (stream WfNodeStreamResponse) {}
+
+    rpc GetWfNodeByValue(WfNodeByValueRequest) returns (WfNodeResponse) {}
+
+    rpc GetWfNodeAll(WfNodeAllRequest) returns (stream WfNodeStreamResponse) {}
+    
+    rpc GetWfNodeAllByClientId(WfNodeAllByClientIdRequest) returns (stream WfNodeStreamResponse) {}
+    
+    rpc save(WfNodeSaveRequest) returns (WfNodeResponse) {}
+    
+}

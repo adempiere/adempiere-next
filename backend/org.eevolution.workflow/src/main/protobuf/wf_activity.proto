@@ -1,0 +1,138 @@
+/**
+ * Copyright (C) 2003-2021, e-Evolution Consultants S.A. , http://www.e-evolution.com
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Email: victor.perez@e-evolution.com, http://www.e-evolution.com , http://github.com/e-Evolution
+ * Created by victor.perez@e-evolution.com , www.e-evolution.com
+ */
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.eevolution.context.workflow.infrastructure.service.grpc";
+
+package workflow;
+
+
+import "application_dictionary_data_type.proto";
+import "google/protobuf/wrappers.proto";
+
+/*
+* WfActivity Proto Message for Workflow Activity domain model  
+* Workflow Activity
+* 
+*/
+message WfActivity
+{
+		// AD_WF_Node_ID -> Node : Workflow Node (activity), step or process
+		TableDirect                   				wf_node_id  = 1;
+		// AD_WF_Responsible_ID -> Workflow Responsible : Responsible for Workflow Execution
+		TableDirect                   				wf_responsible_id  = 2;
+		// AD_Org_ID -> Organization : Organizational entity within client
+		TableDirect                   				org_id  = 3;
+		// CreatedBy -> Created By : User who created this records
+		Table                         				created_by  = 4;
+		// AD_User_ID -> User/Contact : User within the system - Internal or Business Partner Contact
+		Search                        				user_id  = 5;
+		// AD_WF_Activity_ID -> Workflow Activity : Workflow Activity
+		ID                            				wf_activity_id  = 6;
+		// AD_WF_Process_ID -> Workflow Process : Actual Workflow Process Instance
+		TableDirect                   				wf_process_id  = 7;
+		// IsActive -> Active : The record is active in the system
+		YesNo                         				is_active  = 8;
+		// Processed -> Processed : The document has been processed
+		YesNo                         				processed  = 9;
+		// Processing -> Process Now : 
+		String                        				processing  = 10;
+		// WFState -> Workflow State : State of the execution of the workflow
+		String                        				wf_state  = 11;
+		// Created -> Created : Date this record was created
+		DateTime                      				created  = 12;
+		// UpdatedBy -> Updated By : User who updated this records
+		Table                         				updated_by  = 13;
+		// AD_Client_ID -> Client : Client/Tenant for this installation.
+		TableDirect                   				client_id  = 14;
+		// AD_Message_ID -> Message : System Message
+		TableDirect                   				message_id  = 15;
+		// Updated -> Updated : Date this record was updated
+		DateTime                      				updated  = 16;
+		// TextMsg -> Text Message : Text Message
+		String                        				text_msg  = 17;
+		// AD_Workflow_ID -> Workflow : Workflow or combination of tasks
+		TableDirect                   				workflow_id  = 18;
+		// Priority -> Priority : Indicates if this request is of a high, medium or low priority.
+		Integer                       				priority  = 19;
+		// Record_ID -> Record ID : Direct internal record ID
+		String                        				record_id  = 20;
+		// AD_Table_ID -> Table : Database Table information
+		Search                        				table_id  = 21;
+		// EndWaitTime -> End Wait : End of sleep time
+		DateTime                      				end_wait_time  = 22;
+		// DateLastAlert -> Last Alert : Date when last alert were sent
+		Date                          				date_last_alert  = 23;
+		// DynPriorityStart -> Dyn Priority Start : Starting priority before changed dynamically
+		Integer                       				dyn_priority_start  = 24;
+		// UUID -> Immutable Universally Unique Identifier : Immutable Universally Unique Identifier
+		String                        				uuid  = 25;
+}
+
+
+// Proto Message Request for AD_WF_Node_ID 
+message WfActivityByWfNodeIdRequest{
+	TableDirect                    wf_node_id = 1;
+}
+
+// Proto Message Request for AD_WF_Activity_ID 
+message WfActivityByWfActivityIdRequest{
+	ID                             wf_activity_id = 1;
+}
+
+// Proto Message Request for All Request 
+message WfActivityAllRequest 
+{
+}
+
+// Proto Message Request for All By Client Id Request    
+message WfActivityAllByClientIdRequest{
+  TableDirect tenant_id = 1;
+} 
+    
+// Proto Message Save Request for WfActivity
+message WfActivitySaveRequest{
+  WfActivity wf_activity = 1 ;
+}
+    
+// Proto Message Response for WfActivity
+message WfActivityResponse
+{
+   WfActivity wf_activity = 1;
+}
+ 
+// Proto Message Response for WfActivity Stream   
+message WfActivityStreamResponse{
+  repeated WfActivity wf_activity = 1;
+} 
+    
+// Proto Service for WfActivity Domain Model
+service WfActivityService {
+
+    rpc GetWfActivityByWfNodeId(WfActivityByWfNodeIdRequest) returns (stream WfActivityStreamResponse) {}
+
+    rpc GetWfActivityByWfActivityId(WfActivityByWfActivityIdRequest) returns (WfActivityResponse) {}
+
+    rpc GetWfActivityAll(WfActivityAllRequest) returns (stream WfActivityStreamResponse) {}
+    
+    rpc GetWfActivityAllByClientId(WfActivityAllByClientIdRequest) returns (stream WfActivityStreamResponse) {}
+    
+    rpc save(WfActivitySaveRequest) returns (WfActivityResponse) {}
+    
+}
