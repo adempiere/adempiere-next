@@ -1,0 +1,119 @@
+/**
+ * Copyright (C) 2003-2021, e-Evolution Consultants S.A. , http://www.e-evolution.com
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Email: victor.perez@e-evolution.com, http://www.e-evolution.com , http://github.com/e-Evolution
+ * Created by victor.perez@e-evolution.com , www.e-evolution.com
+ */
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.eevolution.context.workflow.infrastructure.service.grpc";
+
+package workflow;
+
+
+import "application_dictionary_data_type.proto";
+import "google/protobuf/wrappers.proto";
+
+/*
+* WfProcessData Proto Message for Workflow Process Data domain model  
+* Workflow Process Context
+* 
+*/
+message WfProcessData
+{
+		// AD_WF_Process_ID -> Workflow Process : Actual Workflow Process Instance
+		TableDirect                   				wf_process_id  = 1;
+		// AttributeName -> Attribute Name : Name of the Attribute
+		String                        				attribute_name  = 2;
+		// IsActive -> Active : The record is active in the system
+		YesNo                         				is_active  = 3;
+		// CreatedBy -> Created By : User who created this records
+		Table                         				created_by  = 4;
+		// UpdatedBy -> Updated By : User who updated this records
+		Table                         				updated_by  = 5;
+		// AD_WF_ProcessData_ID -> Workflow Process Data : Workflow Process Context
+		ID                            				wf_process_data_id  = 6;
+		// AD_Client_ID -> Client : Client/Tenant for this installation.
+		TableDirect                   				client_id  = 7;
+		// AD_Org_ID -> Organization : Organizational entity within client
+		TableDirect                   				org_id  = 8;
+		// Updated -> Updated : Date this record was updated
+		DateTime                      				updated  = 9;
+		// AttributeValue -> Attribute Value : Value of the Attribute
+		String                        				attribute_value  = 10;
+		// Created -> Created : Date this record was created
+		DateTime                      				created  = 11;
+		// UUID -> Immutable Universally Unique Identifier : Immutable Universally Unique Identifier
+		String                        				uuid  = 12;
+}
+
+
+// Proto Message Request for AD_WF_Process_ID 
+message WfProcessDataByWfProcessIdRequest{
+	TableDirect                    wf_process_id = 1;
+}
+
+// Proto Message Request for AttributeName 
+message WfProcessDataByAttributeNameRequest{
+	String                         attribute_name = 1;
+}
+
+// Proto Message Request for AD_WF_ProcessData_ID 
+message WfProcessDataByWfProcessDataIdRequest{
+	ID                             wf_process_data_id = 1;
+}
+
+// Proto Message Request for All Request 
+message WfProcessDataAllRequest 
+{
+}
+
+// Proto Message Request for All By Client Id Request    
+message WfProcessDataAllByClientIdRequest{
+  TableDirect tenant_id = 1;
+} 
+    
+// Proto Message Save Request for WfProcessData
+message WfProcessDataSaveRequest{
+  WfProcessData wf_process_data = 1 ;
+}
+    
+// Proto Message Response for WfProcessData
+message WfProcessDataResponse
+{
+   WfProcessData wf_process_data = 1;
+}
+ 
+// Proto Message Response for WfProcessData Stream   
+message WfProcessDataStreamResponse{
+  repeated WfProcessData wf_process_data = 1;
+} 
+    
+// Proto Service for WfProcessData Domain Model
+service WfProcessDataService {
+
+    rpc GetWfProcessDataByWfProcessId(WfProcessDataByWfProcessIdRequest) returns (stream WfProcessDataStreamResponse) {}
+
+    rpc GetWfProcessDataByAttributeName(WfProcessDataByAttributeNameRequest) returns (stream WfProcessDataStreamResponse) {}
+
+    rpc GetWfProcessDataByWfProcessDataId(WfProcessDataByWfProcessDataIdRequest) returns (WfProcessDataResponse) {}
+
+    rpc GetWfProcessDataAll(WfProcessDataAllRequest) returns (stream WfProcessDataStreamResponse) {}
+    
+    rpc GetWfProcessDataAllByClientId(WfProcessDataAllByClientIdRequest) returns (stream WfProcessDataStreamResponse) {}
+    
+    rpc save(WfProcessDataSaveRequest) returns (WfProcessDataResponse) {}
+    
+}

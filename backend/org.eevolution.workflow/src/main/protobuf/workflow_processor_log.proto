@@ -1,0 +1,127 @@
+/**
+ * Copyright (C) 2003-2021, e-Evolution Consultants S.A. , http://www.e-evolution.com
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Email: victor.perez@e-evolution.com, http://www.e-evolution.com , http://github.com/e-Evolution
+ * Created by victor.perez@e-evolution.com , www.e-evolution.com
+ */
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.eevolution.context.workflow.infrastructure.service.grpc";
+
+package workflow;
+
+
+import "application_dictionary_data_type.proto";
+import "google/protobuf/wrappers.proto";
+
+/*
+* WorkflowProcessorLog Proto Message for Workflow Processorl Log domain model  
+* Result of the execution of the Workflow Processor
+* 
+*/
+message WorkflowProcessorLog
+{
+		// AD_Org_ID -> Organization : Organizational entity within client
+		TableDirect                   				org_id  = 1;
+		// AD_Client_ID -> Client : Client/Tenant for this installation.
+		TableDirect                   				client_id  = 2;
+		// IsActive -> Active : The record is active in the system
+		YesNo                         				is_active  = 3;
+		// AD_WorkflowProcessor_ID -> Workflow Processor : Workflow Processor Server
+		TableDirect                   				workflow_processor_id  = 4;
+		// AD_WorkflowProcessorLog_ID -> Workflow Processorl Log : Result of the execution of the Workflow Processor
+		ID                            				workflow_processor_log_id  = 5;
+		// BinaryData -> Binary Data : Binary Data
+		Binary                        				binary_data  = 6;
+		// Updated -> Updated : Date this record was updated
+		DateTime                      				updated  = 7;
+		// UpdatedBy -> Updated By : User who updated this records
+		Table                         				updated_by  = 8;
+		// Created -> Created : Date this record was created
+		DateTime                      				created  = 9;
+		// Summary -> Summary : Textual summary of this request
+		String                        				summary  = 10;
+		// TextMsg -> Text Message : Text Message
+		String                        				text_msg  = 11;
+		// Reference -> Reference : Reference for this record
+		String                        				reference  = 12;
+		// Description -> Description : Optional short description of the record
+		String                        				description  = 13;
+		// IsError -> Error : An Error occurred in the execution
+		YesNo                         				is_error  = 14;
+		// CreatedBy -> Created By : User who created this records
+		Table                         				created_by  = 15;
+		// UUID -> Immutable Universally Unique Identifier : Immutable Universally Unique Identifier
+		String                        				uuid  = 16;
+}
+
+
+// Proto Message Request for AD_WorkflowProcessor_ID 
+message WorkflowProcessorLogByWorkflowProcessorIdRequest{
+	TableDirect                    workflow_processor_id = 1;
+}
+
+// Proto Message Request for AD_WorkflowProcessorLog_ID 
+message WorkflowProcessorLogByWorkflowProcessorLogIdRequest{
+	ID                             workflow_processor_log_id = 1;
+}
+
+// Proto Message Request for Description 
+message WorkflowProcessorLogByDescriptionRequest{
+	String                         description = 1;
+}
+
+// Proto Message Request for All Request 
+message WorkflowProcessorLogAllRequest 
+{
+}
+
+// Proto Message Request for All By Client Id Request    
+message WorkflowProcessorLogAllByClientIdRequest{
+  TableDirect tenant_id = 1;
+} 
+    
+// Proto Message Save Request for WorkflowProcessorLog
+message WorkflowProcessorLogSaveRequest{
+  WorkflowProcessorLog workflow_processor_log = 1 ;
+}
+    
+// Proto Message Response for WorkflowProcessorLog
+message WorkflowProcessorLogResponse
+{
+   WorkflowProcessorLog workflow_processor_log = 1;
+}
+ 
+// Proto Message Response for WorkflowProcessorLog Stream   
+message WorkflowProcessorLogStreamResponse{
+  repeated WorkflowProcessorLog workflow_processor_log = 1;
+} 
+    
+// Proto Service for WorkflowProcessorLog Domain Model
+service WorkflowProcessorLogService {
+
+    rpc GetWorkflowProcessorLogByWorkflowProcessorId(WorkflowProcessorLogByWorkflowProcessorIdRequest) returns (stream WorkflowProcessorLogStreamResponse) {}
+
+    rpc GetWorkflowProcessorLogByWorkflowProcessorLogId(WorkflowProcessorLogByWorkflowProcessorLogIdRequest) returns (WorkflowProcessorLogResponse) {}
+
+    rpc GetWorkflowProcessorLogByDescription(WorkflowProcessorLogByDescriptionRequest) returns (stream WorkflowProcessorLogStreamResponse) {}
+
+    rpc GetWorkflowProcessorLogAll(WorkflowProcessorLogAllRequest) returns (stream WorkflowProcessorLogStreamResponse) {}
+    
+    rpc GetWorkflowProcessorLogAllByClientId(WorkflowProcessorLogAllByClientIdRequest) returns (stream WorkflowProcessorLogStreamResponse) {}
+    
+    rpc save(WorkflowProcessorLogSaveRequest) returns (WorkflowProcessorLogResponse) {}
+    
+}

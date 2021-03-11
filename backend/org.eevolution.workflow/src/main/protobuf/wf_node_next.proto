@@ -1,0 +1,141 @@
+/**
+ * Copyright (C) 2003-2021, e-Evolution Consultants S.A. , http://www.e-evolution.com
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Email: victor.perez@e-evolution.com, http://www.e-evolution.com , http://github.com/e-Evolution
+ * Created by victor.perez@e-evolution.com , www.e-evolution.com
+ */
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.eevolution.context.workflow.infrastructure.service.grpc";
+
+package workflow;
+
+
+import "application_dictionary_data_type.proto";
+import "google/protobuf/wrappers.proto";
+
+/*
+* WfNodeNext Proto Message for Node Transition domain model  
+* Workflow Node Transition
+* 
+*/
+message WfNodeNext
+{
+		// AD_WF_Node_ID -> Node : Workflow Node (activity), step or process
+		TableDirect                   				wf_node_id  = 1;
+		// IsActive -> Active : The record is active in the system
+		YesNo                         				is_active  = 2;
+		// Created -> Created : Date this record was created
+		DateTime                      				created  = 3;
+		// CreatedBy -> Created By : User who created this records
+		Table                         				created_by  = 4;
+		// Updated -> Updated : Date this record was updated
+		DateTime                      				updated  = 5;
+		// UpdatedBy -> Updated By : User who updated this records
+		Table                         				updated_by  = 6;
+		// AD_Client_ID -> Client : Client/Tenant for this installation.
+		TableDirect                   				client_id  = 7;
+		// AD_Org_ID -> Organization : Organizational entity within client
+		TableDirect                   				org_id  = 8;
+		// AD_WF_Next_ID -> Next Node : Next Node in workflow
+		Table                         				wf_next_id  = 9;
+		// TransitionCode -> Transition Code : Code resulting in TRUE of FALSE
+		String                        				transition_code  = 10;
+		// EntityType -> Entity Type : Dictionary Entity Type; Determines ownership and synchronization
+		String                        				entity_type  = 11;
+		// SeqNo -> Sequence : Method of ordering records; lowest number comes first
+		Integer                       				seq_no  = 12;
+		// Description -> Description : Optional short description of the record
+		String                        				description  = 13;
+		// AD_WF_NodeNext_ID -> Node Transition : Workflow Node Transition
+		ID                            				wf_node_next_id  = 14;
+		// IsStdUserWorkflow -> Std User Workflow : Standard Manual User Approval Workflow
+		YesNo                         				is_std_user_workflow  = 15;
+		// UUID -> Immutable Universally Unique Identifier : Immutable Universally Unique Identifier
+		String                        				uuid  = 16;
+}
+
+
+// Proto Message Request for AD_WF_Node_ID 
+message WfNodeNextByWfNodeIdRequest{
+	TableDirect                    wf_node_id = 1;
+}
+
+// Proto Message Request for AD_WF_Next_ID 
+message WfNodeNextByWfNextIdRequest{
+	Table                          wf_next_id = 1;
+}
+
+// Proto Message Request for SeqNo 
+message WfNodeNextBySeqNoRequest{
+	Integer                        seq_no = 1;
+}
+
+// Proto Message Request for Description 
+message WfNodeNextByDescriptionRequest{
+	String                         description = 1;
+}
+
+// Proto Message Request for AD_WF_NodeNext_ID 
+message WfNodeNextByWfNodeNextIdRequest{
+	ID                             wf_node_next_id = 1;
+}
+
+// Proto Message Request for All Request 
+message WfNodeNextAllRequest 
+{
+}
+
+// Proto Message Request for All By Client Id Request    
+message WfNodeNextAllByClientIdRequest{
+  TableDirect tenant_id = 1;
+} 
+    
+// Proto Message Save Request for WfNodeNext
+message WfNodeNextSaveRequest{
+  WfNodeNext wf_node_next = 1 ;
+}
+    
+// Proto Message Response for WfNodeNext
+message WfNodeNextResponse
+{
+   WfNodeNext wf_node_next = 1;
+}
+ 
+// Proto Message Response for WfNodeNext Stream   
+message WfNodeNextStreamResponse{
+  repeated WfNodeNext wf_node_next = 1;
+} 
+    
+// Proto Service for WfNodeNext Domain Model
+service WfNodeNextService {
+
+    rpc GetWfNodeNextByWfNodeId(WfNodeNextByWfNodeIdRequest) returns (stream WfNodeNextStreamResponse) {}
+
+    rpc GetWfNodeNextByWfNextId(WfNodeNextByWfNextIdRequest) returns (stream WfNodeNextStreamResponse) {}
+
+    rpc GetWfNodeNextBySeqNo(WfNodeNextBySeqNoRequest) returns (stream WfNodeNextStreamResponse) {}
+
+    rpc GetWfNodeNextByDescription(WfNodeNextByDescriptionRequest) returns (stream WfNodeNextStreamResponse) {}
+
+    rpc GetWfNodeNextByWfNodeNextId(WfNodeNextByWfNodeNextIdRequest) returns (WfNodeNextResponse) {}
+
+    rpc GetWfNodeNextAll(WfNodeNextAllRequest) returns (stream WfNodeNextStreamResponse) {}
+    
+    rpc GetWfNodeNextAllByClientId(WfNodeNextAllByClientIdRequest) returns (stream WfNodeNextStreamResponse) {}
+    
+    rpc save(WfNodeNextSaveRequest) returns (WfNodeNextResponse) {}
+    
+}

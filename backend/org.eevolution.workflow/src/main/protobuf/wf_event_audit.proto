@@ -1,0 +1,141 @@
+/**
+ * Copyright (C) 2003-2021, e-Evolution Consultants S.A. , http://www.e-evolution.com
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Email: victor.perez@e-evolution.com, http://www.e-evolution.com , http://github.com/e-Evolution
+ * Created by victor.perez@e-evolution.com , www.e-evolution.com
+ */
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.eevolution.context.workflow.infrastructure.service.grpc";
+
+package workflow;
+
+
+import "application_dictionary_data_type.proto";
+import "google/protobuf/wrappers.proto";
+
+/*
+* WfEventAudit Proto Message for Workflow Event Audit domain model  
+* Workflow Process Activity Event Audit Information
+* 
+*/
+message WfEventAudit
+{
+		// AttributeName -> Attribute Name : Name of the Attribute
+		String                        				attribute_name  = 1;
+		// AD_User_ID -> User/Contact : User within the system - Internal or Business Partner Contact
+		Search                        				user_id  = 2;
+		// AD_WF_Responsible_ID -> Workflow Responsible : Responsible for Workflow Execution
+		TableDirect                   				wf_responsible_id  = 3;
+		// AD_Client_ID -> Client : Client/Tenant for this installation.
+		TableDirect                   				client_id  = 4;
+		// IsActive -> Active : The record is active in the system
+		YesNo                         				is_active  = 5;
+		// UpdatedBy -> Updated By : User who updated this records
+		Table                         				updated_by  = 6;
+		// NewValue -> New Value : New field value
+		String                        				new_value  = 7;
+		// AD_Org_ID -> Organization : Organizational entity within client
+		TableDirect                   				org_id  = 8;
+		// Updated -> Updated : Date this record was updated
+		DateTime                      				updated  = 9;
+		// CreatedBy -> Created By : User who created this records
+		Table                         				created_by  = 10;
+		// WFState -> Workflow State : State of the execution of the workflow
+		String                        				wf_state  = 11;
+		// Created -> Created : Date this record was created
+		DateTime                      				created  = 12;
+		// OldValue -> Old Value : The old file data
+		String                        				old_value  = 13;
+		// AD_WF_EventAudit_ID -> Workflow Event Audit : Workflow Process Activity Event Audit Information
+		ID                            				wf_event_audit_id  = 14;
+		// EventType -> Event Type : Type of Event
+		String                        				event_type  = 15;
+		// Description -> Description : Optional short description of the record
+		String                        				description  = 16;
+		// AD_WF_Process_ID -> Workflow Process : Actual Workflow Process Instance
+		TableDirect                   				wf_process_id  = 17;
+		// AD_Table_ID -> Table : Database Table information
+		TableDirect                   				table_id  = 18;
+		// TextMsg -> Text Message : Text Message
+		String                        				text_msg  = 19;
+		// AD_WF_Node_ID -> Node : Workflow Node (activity), step or process
+		TableDirect                   				wf_node_id  = 20;
+		// Record_ID -> Record ID : Direct internal record ID
+		String                        				record_id  = 21;
+		// ElapsedTimeMS -> Elapsed Time ms : Elapsed Time in milli seconds
+		Number                        				elapsed_time_m_s  = 22;
+		// UUID -> Immutable Universally Unique Identifier : Immutable Universally Unique Identifier
+		String                        				uuid  = 23;
+}
+
+
+// Proto Message Request for AttributeName 
+message WfEventAuditByAttributeNameRequest{
+	String                         attribute_name = 1;
+}
+
+// Proto Message Request for AD_WF_EventAudit_ID 
+message WfEventAuditByWfEventAuditIdRequest{
+	ID                             wf_event_audit_id = 1;
+}
+
+// Proto Message Request for Description 
+message WfEventAuditByDescriptionRequest{
+	String                         description = 1;
+}
+
+// Proto Message Request for All Request 
+message WfEventAuditAllRequest 
+{
+}
+
+// Proto Message Request for All By Client Id Request    
+message WfEventAuditAllByClientIdRequest{
+  TableDirect tenant_id = 1;
+} 
+    
+// Proto Message Save Request for WfEventAudit
+message WfEventAuditSaveRequest{
+  WfEventAudit wf_event_audit = 1 ;
+}
+    
+// Proto Message Response for WfEventAudit
+message WfEventAuditResponse
+{
+   WfEventAudit wf_event_audit = 1;
+}
+ 
+// Proto Message Response for WfEventAudit Stream   
+message WfEventAuditStreamResponse{
+  repeated WfEventAudit wf_event_audit = 1;
+} 
+    
+// Proto Service for WfEventAudit Domain Model
+service WfEventAuditService {
+
+    rpc GetWfEventAuditByAttributeName(WfEventAuditByAttributeNameRequest) returns (stream WfEventAuditStreamResponse) {}
+
+    rpc GetWfEventAuditByWfEventAuditId(WfEventAuditByWfEventAuditIdRequest) returns (WfEventAuditResponse) {}
+
+    rpc GetWfEventAuditByDescription(WfEventAuditByDescriptionRequest) returns (stream WfEventAuditStreamResponse) {}
+
+    rpc GetWfEventAuditAll(WfEventAuditAllRequest) returns (stream WfEventAuditStreamResponse) {}
+    
+    rpc GetWfEventAuditAllByClientId(WfEventAuditAllByClientIdRequest) returns (stream WfEventAuditStreamResponse) {}
+    
+    rpc save(WfEventAuditSaveRequest) returns (WfEventAuditResponse) {}
+    
+}

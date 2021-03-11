@@ -1,0 +1,102 @@
+/**
+ * Copyright (C) 2003-2021, e-Evolution Consultants S.A. , http://www.e-evolution.com
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Email: victor.perez@e-evolution.com, http://www.e-evolution.com , http://github.com/e-Evolution
+ * Created by victor.perez@e-evolution.com , www.e-evolution.com
+ */
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.eevolution.context.workflow.infrastructure.service.grpc";
+
+package workflow;
+
+
+import "application_dictionary_data_type.proto";
+import "google/protobuf/wrappers.proto";
+
+/*
+* WorkflowTrl Proto Message for Workflow Trl domain model  
+* Workflow or combination of tasks
+* 
+*/
+message WorkflowTrl
+{
+		// AD_Workflow_ID -> Workflow : Workflow or combination of tasks
+		TableDirect                   				workflow_id  = 1;
+		// AD_Language -> Language : Language for this entity
+		Table                         				language  = 2;
+		// Name -> Name : Alphanumeric identifier of the entity
+		String                        				name  = 3;
+		// Description -> Description : Optional short description of the record
+		String                        				description  = 4;
+		// Help -> Comment/Help : Comment or Hint
+		String                        				help  = 5;
+		// IsTranslated -> Translated : This column is translated
+		YesNo                         				is_translated  = 6;
+		// IsActive -> Active : The record is active in the system
+		YesNo                         				is_active  = 7;
+		// Created -> Created : Date this record was created
+		DateTime                      				created  = 8;
+		// CreatedBy -> Created By : User who created this records
+		Table                         				created_by  = 9;
+		// Updated -> Updated : Date this record was updated
+		DateTime                      				updated  = 10;
+		// UpdatedBy -> Updated By : User who updated this records
+		Table                         				updated_by  = 11;
+		// AD_Client_ID -> Client : Client/Tenant for this installation.
+		TableDirect                   				client_id  = 12;
+		// AD_Org_ID -> Organization : Organizational entity within client
+		TableDirect                   				org_id  = 13;
+		// UUID -> Immutable Universally Unique Identifier : Immutable Universally Unique Identifier
+		String                        				uuid  = 14;
+}
+
+
+// Proto Message Request for All Request 
+message WorkflowTrlAllRequest 
+{
+}
+
+// Proto Message Request for All By Client Id Request    
+message WorkflowTrlAllByClientIdRequest{
+  TableDirect tenant_id = 1;
+} 
+    
+// Proto Message Save Request for WorkflowTrl
+message WorkflowTrlSaveRequest{
+  WorkflowTrl workflow_trl = 1 ;
+}
+    
+// Proto Message Response for WorkflowTrl
+message WorkflowTrlResponse
+{
+   WorkflowTrl workflow_trl = 1;
+}
+ 
+// Proto Message Response for WorkflowTrl Stream   
+message WorkflowTrlStreamResponse{
+  repeated WorkflowTrl workflow_trl = 1;
+} 
+    
+// Proto Service for WorkflowTrl Domain Model
+service WorkflowTrlService {
+
+    rpc GetWorkflowTrlAll(WorkflowTrlAllRequest) returns (stream WorkflowTrlStreamResponse) {}
+    
+    rpc GetWorkflowTrlAllByClientId(WorkflowTrlAllByClientIdRequest) returns (stream WorkflowTrlStreamResponse) {}
+    
+    rpc save(WorkflowTrlSaveRequest) returns (WorkflowTrlResponse) {}
+    
+}

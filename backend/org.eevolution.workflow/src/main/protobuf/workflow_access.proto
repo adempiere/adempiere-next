@@ -1,0 +1,96 @@
+/**
+ * Copyright (C) 2003-2021, e-Evolution Consultants S.A. , http://www.e-evolution.com
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Email: victor.perez@e-evolution.com, http://www.e-evolution.com , http://github.com/e-Evolution
+ * Created by victor.perez@e-evolution.com , www.e-evolution.com
+ */
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.eevolution.context.workflow.infrastructure.service.grpc";
+
+package workflow;
+
+
+import "application_dictionary_data_type.proto";
+import "google/protobuf/wrappers.proto";
+
+/*
+* WorkflowAccess Proto Message for AD_Workflow_Access domain model  
+* 
+* 
+*/
+message WorkflowAccess
+{
+		// AD_Workflow_ID -> Workflow : Workflow or combination of tasks
+		TableDirect                   				workflow_id  = 1;
+		// AD_Client_ID -> Client : Client/Tenant for this installation.
+		TableDirect                   				client_id  = 2;
+		// AD_Org_ID -> Organization : Organizational entity within client
+		TableDirect                   				org_id  = 3;
+		// IsActive -> Active : The record is active in the system
+		YesNo                         				is_active  = 4;
+		// Created -> Created : Date this record was created
+		DateTime                      				created  = 5;
+		// CreatedBy -> Created By : User who created this records
+		Table                         				created_by  = 6;
+		// Updated -> Updated : Date this record was updated
+		DateTime                      				updated  = 7;
+		// UpdatedBy -> Updated By : User who updated this records
+		Table                         				updated_by  = 8;
+		// IsReadWrite -> Read Write : Field is read / write
+		YesNo                         				is_read_write  = 9;
+		// AD_Role_ID -> Role : Responsibility Role
+		TableDirect                   				role_id  = 10;
+		// UUID -> Immutable Universally Unique Identifier : Immutable Universally Unique Identifier
+		String                        				uuid  = 11;
+}
+
+
+// Proto Message Request for All Request 
+message WorkflowAccessAllRequest 
+{
+}
+
+// Proto Message Request for All By Client Id Request    
+message WorkflowAccessAllByClientIdRequest{
+  TableDirect tenant_id = 1;
+} 
+    
+// Proto Message Save Request for WorkflowAccess
+message WorkflowAccessSaveRequest{
+  WorkflowAccess workflow_access = 1 ;
+}
+    
+// Proto Message Response for WorkflowAccess
+message WorkflowAccessResponse
+{
+   WorkflowAccess workflow_access = 1;
+}
+ 
+// Proto Message Response for WorkflowAccess Stream   
+message WorkflowAccessStreamResponse{
+  repeated WorkflowAccess workflow_access = 1;
+} 
+    
+// Proto Service for WorkflowAccess Domain Model
+service WorkflowAccessService {
+
+    rpc GetWorkflowAccessAll(WorkflowAccessAllRequest) returns (stream WorkflowAccessStreamResponse) {}
+    
+    rpc GetWorkflowAccessAllByClientId(WorkflowAccessAllByClientIdRequest) returns (stream WorkflowAccessStreamResponse) {}
+    
+    rpc save(WorkflowAccessSaveRequest) returns (WorkflowAccessResponse) {}
+    
+}

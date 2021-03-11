@@ -1,0 +1,129 @@
+/**
+ * Copyright (C) 2003-2021, e-Evolution Consultants S.A. , http://www.e-evolution.com
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Email: victor.perez@e-evolution.com, http://www.e-evolution.com , http://github.com/e-Evolution
+ * Created by victor.perez@e-evolution.com , www.e-evolution.com
+ */
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.eevolution.context.workflow.infrastructure.service.grpc";
+
+package workflow;
+
+
+import "application_dictionary_data_type.proto";
+import "google/protobuf/wrappers.proto";
+
+/*
+* WfNextCondition Proto Message for Transition Condition domain model  
+* Workflow Node Transition Condition
+* 
+*/
+message WfNextCondition
+{
+		// CreatedBy -> Created By : User who created this records
+		Table                         				created_by  = 1;
+		// AD_WF_NextCondition_ID -> Transition Condition : Workflow Node Transition Condition
+		ID                            				wf_next_condition_id  = 2;
+		// AndOr -> And/Or : Logical operation: AND or OR
+		String                        				and_or  = 3;
+		// Created -> Created : Date this record was created
+		DateTime                      				created  = 4;
+		// Operation -> Operation : Compare Operation
+		String                        				operation  = 5;
+		// AD_Org_ID -> Organization : Organizational entity within client
+		TableDirect                   				org_id  = 6;
+		// AD_Client_ID -> Client : Client/Tenant for this installation.
+		TableDirect                   				client_id  = 7;
+		// AD_WF_NodeNext_ID -> Node Transition : Workflow Node Transition
+		TableDirect                   				wf_node_next_id  = 8;
+		// SeqNo -> Sequence : Method of ordering records; lowest number comes first
+		Integer                       				seq_no  = 9;
+		// Value -> Search Key : Search key for the record in the format required - must be unique
+		String                        				value  = 10;
+		// UpdatedBy -> Updated By : User who updated this records
+		Table                         				updated_by  = 11;
+		// IsActive -> Active : The record is active in the system
+		YesNo                         				is_active  = 12;
+		// Value2 -> Value To : Value To
+		String                        				value_2  = 13;
+		// EntityType -> Entity Type : Dictionary Entity Type; Determines ownership and synchronization
+		String                        				entity_type  = 14;
+		// Updated -> Updated : Date this record was updated
+		DateTime                      				updated  = 15;
+		// AD_Column_ID -> Column : Column in the table
+		TableDirect                   				column_id  = 16;
+		// UUID -> Immutable Universally Unique Identifier : Immutable Universally Unique Identifier
+		String                        				uuid  = 17;
+}
+
+
+// Proto Message Request for AD_WF_NextCondition_ID 
+message WfNextConditionByWfNextConditionIdRequest{
+	ID                             wf_next_condition_id = 1;
+}
+
+// Proto Message Request for AD_WF_NodeNext_ID 
+message WfNextConditionByWfNodeNextIdRequest{
+	TableDirect                    wf_node_next_id = 1;
+}
+
+// Proto Message Request for Value 
+message WfNextConditionByValueRequest{
+	String                         value = 1;
+}
+
+// Proto Message Request for All Request 
+message WfNextConditionAllRequest 
+{
+}
+
+// Proto Message Request for All By Client Id Request    
+message WfNextConditionAllByClientIdRequest{
+  TableDirect tenant_id = 1;
+} 
+    
+// Proto Message Save Request for WfNextCondition
+message WfNextConditionSaveRequest{
+  WfNextCondition wf_next_condition = 1 ;
+}
+    
+// Proto Message Response for WfNextCondition
+message WfNextConditionResponse
+{
+   WfNextCondition wf_next_condition = 1;
+}
+ 
+// Proto Message Response for WfNextCondition Stream   
+message WfNextConditionStreamResponse{
+  repeated WfNextCondition wf_next_condition = 1;
+} 
+    
+// Proto Service for WfNextCondition Domain Model
+service WfNextConditionService {
+
+    rpc GetWfNextConditionByWfNextConditionId(WfNextConditionByWfNextConditionIdRequest) returns (WfNextConditionResponse) {}
+
+    rpc GetWfNextConditionByWfNodeNextId(WfNextConditionByWfNodeNextIdRequest) returns (stream WfNextConditionStreamResponse) {}
+
+    rpc GetWfNextConditionByValue(WfNextConditionByValueRequest) returns (WfNextConditionResponse) {}
+
+    rpc GetWfNextConditionAll(WfNextConditionAllRequest) returns (stream WfNextConditionStreamResponse) {}
+    
+    rpc GetWfNextConditionAllByClientId(WfNextConditionAllByClientIdRequest) returns (stream WfNextConditionStreamResponse) {}
+    
+    rpc save(WfNextConditionSaveRequest) returns (WfNextConditionResponse) {}
+    
+}

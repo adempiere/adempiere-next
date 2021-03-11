@@ -1,0 +1,130 @@
+/**
+ * Copyright (C) 2003-2021, e-Evolution Consultants S.A. , http://www.e-evolution.com
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Email: victor.perez@e-evolution.com, http://www.e-evolution.com , http://github.com/e-Evolution
+ * Created by victor.perez@e-evolution.com , www.e-evolution.com
+ */
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.eevolution.context.workflow.infrastructure.service.grpc";
+
+package workflow;
+
+
+import "application_dictionary_data_type.proto";
+import "google/protobuf/wrappers.proto";
+
+/*
+* WfActivityResult Proto Message for Workflow Activity Result domain model  
+* Result of the Workflow Process Activity
+* 
+*/
+message WfActivityResult
+{
+		// AD_Client_ID -> Client : Client/Tenant for this installation.
+		TableDirect                   				client_id  = 1;
+		// AD_Org_ID -> Organization : Organizational entity within client
+		TableDirect                   				org_id  = 2;
+		// AD_WF_Activity_ID -> Workflow Activity : Workflow Activity
+		TableDirect                   				wf_activity_id  = 3;
+		// AttributeName -> Attribute Name : Name of the Attribute
+		String                        				attribute_name  = 4;
+		// CreatedBy -> Created By : User who created this records
+		Table                         				created_by  = 5;
+		// UpdatedBy -> Updated By : User who updated this records
+		Table                         				updated_by  = 6;
+		// Updated -> Updated : Date this record was updated
+		DateTime                      				updated  = 7;
+		// IsActive -> Active : The record is active in the system
+		YesNo                         				is_active  = 8;
+		// AttributeValue -> Attribute Value : Value of the Attribute
+		String                        				attribute_value  = 9;
+		// Created -> Created : Date this record was created
+		DateTime                      				created  = 10;
+		// AD_WF_ActivityResult_ID -> Workflow Activity Result : Result of the Workflow Process Activity
+		ID                            				wf_activity_result_id  = 11;
+		// Description -> Description : Optional short description of the record
+		String                        				description  = 12;
+		// Help -> Comment/Help : Comment or Hint
+		String                        				help  = 13;
+		// UUID -> Immutable Universally Unique Identifier : Immutable Universally Unique Identifier
+		String                        				uuid  = 14;
+}
+
+
+// Proto Message Request for AD_WF_Activity_ID 
+message WfActivityResultByWfActivityIdRequest{
+	TableDirect                    wf_activity_id = 1;
+}
+
+// Proto Message Request for AttributeName 
+message WfActivityResultByAttributeNameRequest{
+	String                         attribute_name = 1;
+}
+
+// Proto Message Request for AD_WF_ActivityResult_ID 
+message WfActivityResultByWfActivityResultIdRequest{
+	ID                             wf_activity_result_id = 1;
+}
+
+// Proto Message Request for Description 
+message WfActivityResultByDescriptionRequest{
+	String                         description = 1;
+}
+
+// Proto Message Request for All Request 
+message WfActivityResultAllRequest 
+{
+}
+
+// Proto Message Request for All By Client Id Request    
+message WfActivityResultAllByClientIdRequest{
+  TableDirect tenant_id = 1;
+} 
+    
+// Proto Message Save Request for WfActivityResult
+message WfActivityResultSaveRequest{
+  WfActivityResult wf_activity_result = 1 ;
+}
+    
+// Proto Message Response for WfActivityResult
+message WfActivityResultResponse
+{
+   WfActivityResult wf_activity_result = 1;
+}
+ 
+// Proto Message Response for WfActivityResult Stream   
+message WfActivityResultStreamResponse{
+  repeated WfActivityResult wf_activity_result = 1;
+} 
+    
+// Proto Service for WfActivityResult Domain Model
+service WfActivityResultService {
+
+    rpc GetWfActivityResultByWfActivityId(WfActivityResultByWfActivityIdRequest) returns (stream WfActivityResultStreamResponse) {}
+
+    rpc GetWfActivityResultByAttributeName(WfActivityResultByAttributeNameRequest) returns (stream WfActivityResultStreamResponse) {}
+
+    rpc GetWfActivityResultByWfActivityResultId(WfActivityResultByWfActivityResultIdRequest) returns (WfActivityResultResponse) {}
+
+    rpc GetWfActivityResultByDescription(WfActivityResultByDescriptionRequest) returns (stream WfActivityResultStreamResponse) {}
+
+    rpc GetWfActivityResultAll(WfActivityResultAllRequest) returns (stream WfActivityResultStreamResponse) {}
+    
+    rpc GetWfActivityResultAllByClientId(WfActivityResultAllByClientIdRequest) returns (stream WfActivityResultStreamResponse) {}
+    
+    rpc save(WfActivityResultSaveRequest) returns (WfActivityResultResponse) {}
+    
+}
