@@ -1,6 +1,6 @@
-# ADempiere Aesthetic
+# ADempiere Next (ADN)
 
-ADempiere Aesthetic is a modern user interface and experience (UI/UX) new UI for [ADempiere ERP, CRM &amp; SCM](http://www.adempiere.io/web/guest/welcome). based on [Vue.js 3](https://v3.vuejs.org) a progressive framework for building an aesthetic, beautiful, wonderful user interface.  
+ADempiere Next is a modern user interface and experience (UI/UX) new UI for [ADempiere ERP, CRM &amp; SCM](http://www.adempiere.io/web/guest/welcome). based on [Vue.js 3](https://v3.vuejs.org) a progressive framework for building an aesthetic, beautiful, wonderful user interface.  
 
 The Frontend is developed with [TypeScript](https://www.typescriptlang.org) is an open-source language that builds on JavaScript, one of the world’s most used tools, by adding static type definitions, 
 
